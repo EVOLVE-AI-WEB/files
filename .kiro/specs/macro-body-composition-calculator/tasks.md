@@ -10,8 +10,8 @@ The implementation language is **TypeScript** (strict), matching the design.
 
 ## Tasks
 
-- [ ] 1. Project setup, tooling, and shared foundations
-  - [ ] 1.1 Initialize the project and install dependencies
+- [x] 1. Project setup, tooling, and shared foundations
+  - [x] 1.1 Initialize the project and install dependencies
     - Scaffold a React + Vite + TypeScript (strict mode) project
     - Install runtime deps: `@supabase/supabase-js`, `@tanstack/react-query`, `react-router-dom`, `framer-motion`, `lucide-react`, `recharts`, `tailwindcss` (+ `postcss`, `autoprefixer`)
     - Install dev/test deps: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`, `fast-check`
@@ -19,107 +19,107 @@ The implementation language is **TypeScript** (strict), matching the design.
     - Add npm scripts: `dev`, `build`, `preview`, `test`, `test:run`
     - _Requirements: 26.5_
 
-  - [ ] 1.2 Configure the typed Supabase client and environment template
+  - [x] 1.2 Configure the typed Supabase client and environment template
     - Create a single Supabase client module reading `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (anon key only; never the service-role key or DB password)
     - Create `.env.example` containing only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` placeholders
     - _Requirements: 18.6_
 
-  - [ ] 1.3 Define core domain types and centralized CONFIG
+  - [x] 1.3 Define core domain types and centralized CONFIG
     - Add `Unit`, `Sex`, `BodyFatMethod`, `MacroSettings`, `MacroResult`, `ProgressEntry`, `RollingAverageResult`, `AutoUpdateQualification`, `GoalProgress`, and category types
     - Add the `CONFIG` object (multiplier defaults 16.8/1.0/0.4, `LB_PER_KG`, `CM_PER_INCH`, `ROLLING_WINDOW_DAYS = 7`, `AUTO_UPDATE_MIN_MEASUREMENTS = 4`, `ALLOWED_EMAIL_DOMAINS`, `MACRO_SETTINGS_BOUNDS`)
     - _Requirements: 4.1, 5.2, 5.3, 5.4, 6.1, 11.1, 12.4_
 
-- [ ] 2. Pure calculation layer — unit conversion and macros (test-driven)
-  - [ ] 2.1 Implement unit-conversion helpers
+- [x] 2. Pure calculation layer — unit conversion and macros (test-driven)
+  - [x] 2.1 Implement unit-conversion helpers
     - Implement `kgToLb`, `lbToKg`, `cmToInches`, `inchesToCm` as pure, unrounded functions
     - _Requirements: 5.1, 8.1_
 
-  - [ ]* 2.2 Write property test for unit-conversion round-trips
+  - [x]* 2.2 Write property test for unit-conversion round-trips
     - **Property 4: Unit conversion round-trips preserve canonical value**
     - **Validates: Requirements 5.1, 8.1**
     - Tag: `Feature: macro-body-composition-calculator, Property 4: ...`
 
-  - [ ] 2.3 Implement `calculateMacros` and macro helpers
+  - [x] 2.3 Implement `calculateMacros` and macro helpers
     - Implement `calculateCalories`, `calculateProtein`, `calculateFat`, `calculateCarbs`, and `calculateMacros(activeCalculationWeightKg, settings)`
     - Compute carbs from remaining calories only; set `isCarbShortfall` + `carbGrams = 0` (never negative) + `guidanceMessage` when protein+fat calories exceed total; never round intermediates
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.8, 5.9, 6.4_
 
-  - [ ]* 2.4 Write unit test for the verified 70 kg reference vector
+  - [x]* 2.4 Write unit test for the verified 70 kg reference vector
     - Assert `weightLb = 154.3234`, `totalCalories = 2592.63312`, `proteinGrams = 154.3234`, `fatGrams = 61.72936`, `carbGrams = 354.94382`, and displayed 2,593 / 154 / 62 / 355
     - _Requirements: 5.7, 26.1_
 
-  - [ ]* 2.5 Write property test for macro determinism regardless of weight source
+  - [x]* 2.5 Write property test for macro determinism regardless of weight source
     - **Property 1: Macro formula determinism regardless of weight source**
     - **Validates: Requirements 5.8, 4.2**
 
-  - [ ]* 2.6 Write property test for carbs = remaining calories, never negative
+  - [x]* 2.6 Write property test for carbs = remaining calories, never negative
     - **Property 2: Carbs equal remaining calories; never negative**
     - **Validates: Requirements 5.5, 5.9, 6.4**
 
-  - [ ]* 2.7 Write property test for unrounded intermediates
+  - [x]* 2.7 Write property test for unrounded intermediates
     - **Property 3: Intermediate values never rounded**
     - **Validates: Requirements 5.6, 19.1**
 
-- [ ] 3. Pure calculation layer — BMI, Navy body fat, body composition (test-driven)
-  - [ ] 3.1 Implement BMI calculation and categorization
+- [x] 3. Pure calculation layer — BMI, Navy body fat, body composition (test-driven)
+  - [x] 3.1 Implement BMI calculation and categorization
     - Implement `calculateBMI(weightKg, heightCm)` and `getBMICategory(bmi, age)` with the adult screening bands and the under-20 BMI-for-age percentile note
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-  - [ ]* 3.2 Write unit tests for BMI bands and the under-20 branch
+  - [x]* 3.2 Write unit tests for BMI bands and the under-20 branch
     - Cover each adult category boundary and the age < 20 percentile-note path
     - _Requirements: 7.2, 7.3_
 
-  - [ ] 3.3 Implement U.S. Navy body-fat calculations
+  - [x] 3.3 Implement U.S. Navy body-fat calculations
     - Implement `calculateMaleNavyBodyFat` / `calculateFemaleNavyBodyFat` operating on inches (`cm / 2.54`) using `Math.log10` with the exact male/female coefficients
     - _Requirements: 8.1, 8.2, 8.3_
 
-  - [ ]* 3.4 Write property + fixture tests for Navy formulas
+  - [x]* 3.4 Write property + fixture tests for Navy formulas
     - **Property 5: Navy formulas always receive inches and use log10**
     - **Validates: Requirements 8.1, 8.2, 8.3, 26.1**
 
-  - [ ] 3.5 Implement body-composition derivations and categories
+  - [x] 3.5 Implement body-composition derivations and categories
     - Implement `calculateFatMass`, `calculateLeanBodyMass`, and `getBodyFatCategory(sex, bodyFat, age)` with the ACE-style, sex-dependent bands; return absent fat/lean mass when body fat is missing (never fabricated)
     - _Requirements: 9.1, 9.2, 9.3_
 
-  - [ ]* 3.6 Write property test for fat/lean mass derivation and missing-data honesty
+  - [x]* 3.6 Write property test for fat/lean mass derivation and missing-data honesty
     - **Property 13: Fat/lean mass derived correctly & not fabricated when BF% missing**
     - **Validates: Requirements 9.1, 9.2**
 
-- [ ] 4. Pure calculation layer — rolling average, auto-update, goal progress (test-driven)
-  - [ ] 4.1 Implement the 7-day rolling weight average
+- [x] 4. Pure calculation layer — rolling average, auto-update, goal progress (test-driven)
+  - [x] 4.1 Implement the 7-day rolling weight average
     - Implement `calculateRollingWeightAverage(entries, endDate, windowDays)`; include only valid entries in the inclusive window, ignore missing days (never zero-fill), report `measurementCount`, return `averageKg = null` when empty, full precision
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-  - [ ]* 4.2 Write property test for the rolling average ignoring missing days
+  - [x]* 4.2 Write property test for the rolling average ignoring missing days
     - **Property 6: 7-day average ignores missing days and reports measurement count**
     - **Validates: Requirements 11.2, 11.3, 11.5**
 
-  - [ ] 4.3 Implement auto-macro-update qualification
+  - [x] 4.3 Implement auto-macro-update qualification
     - Implement `isAutoMacroUpdateQualified(entries, period, minimumMeasurements)`; qualify only with a rolling average of `>= 4` measurements and once-per-period guard; never fabricate, never use a single outlier, never overwrite baseline
     - _Requirements: 12.3, 12.4, 12.5, 12.6, 12.7_
 
-  - [ ]* 4.4 Write property test for qualifying-average-only auto updates
+  - [x]* 4.4 Write property test for qualifying-average-only auto updates
     - **Property 10: Auto Macro ON only uses qualifying averages (>= min, <= once/week)**
     - **Validates: Requirements 12.3, 12.4, 12.6**
 
-  - [ ] 4.5 Implement goal-progress calculation
+  - [x] 4.5 Implement goal-progress calculation
     - Implement `calculateGoalProgress(starting, current, goal)`; guard divide-by-zero (`progressPercent = null` when `starting == goal`), classify `gaining|losing|reached|exceeded|undefined`, clamp `displayPercent` to [0,100]
     - _Requirements: 14.2, 14.3, 14.4, 14.5_
 
-  - [ ]* 4.6 Write property test for goal-progress cases and divide-by-zero guard
+  - [x]* 4.6 Write property test for goal-progress cases and divide-by-zero guard
     - **Property 12: Goal progress handles gain/loss/reached/exceeded & divide-by-zero**
     - **Validates: Requirements 14.3, 14.4, 14.5**
 
-- [ ] 5. Validation layer (test-driven)
-  - [ ] 5.1 Implement centralized validators
+- [x] 5. Validation layer (test-driven)
+  - [x] 5.1 Implement centralized validators
     - Implement `validateAllowedEmailDomain` (exact, case-insensitive, domain after final `@`; reject look-alikes and non-single-`@` strings), `validateMacroSettings` (bounds calorie ≤ 40, protein ≤ 3, fat ≤ 2, all positive), `validateNavyMeasurements` (pre-`log10` positivity + `waist−neck > 0` / `waist+hip−neck > 0`, no NaN/∞, non-blocking warnings), `validateProgressEntry` (required positive weight, body fat 0–75), `validateGoalWeight`
     - _Requirements: 2.1, 2.2, 2.5, 2.6, 6.3, 8.4, 8.6, 10.7, 14.1_
 
-  - [ ]* 5.2 Write property test for the email allowlist exact-match rule
+  - [x]* 5.2 Write property test for the email allowlist exact-match rule
     - **Property 14: Email allowlist exact-match rejects look-alikes**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.6**
 
-  - [ ]* 5.3 Write unit tests for macro-settings, Navy, progress-entry, and goal validators
+  - [x]* 5.3 Write unit tests for macro-settings, Navy, progress-entry, and goal validators
     - Cover bounds rejection, pre-`log10` guards, warning-but-valid path, body-fat range, and goal validation
     - _Requirements: 6.3, 8.4, 8.5, 10.7, 14.1_
 
