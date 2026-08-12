@@ -53,7 +53,7 @@ import {
   buildMacroSourceMessage,
 } from '../shared/macroDerivation';
 import { formatOneDecimal } from '../shared/format';
-import { DISCLAIMER_TEXT, CALORIE_MULTIPLIER_NOTE } from '../shared/disclaimer';
+import { DISCLAIMER_TEXT, CALORIE_MULTIPLIER_NOTE } from '../shared/disclaimerContent';
 import { NutritionResults } from './NutritionResults';
 import { BodyFatGauge } from './BodyFatGauge';
 

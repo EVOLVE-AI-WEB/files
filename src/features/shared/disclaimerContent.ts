@@ -6,6 +6,10 @@
  * (and available to any other screen that needs it). The 16.8 kcal/lb calorie
  * multiplier is always presented as a *configurable default*, never a medically
  * exact figure (R24.3).
+ *
+ * NOTE: this module is intentionally named `disclaimerContent.ts` (not
+ * `disclaimer.ts`) so it never collides by filename case with the sibling
+ * component `Disclaimer.tsx` on case-insensitive filesystems (bugfix Bug 2).
  */
 import { CONFIG } from '../../config';
 
