@@ -61,29 +61,52 @@ const GENERIC_SIGNUP_UNAVAILABLE =
   'Sign-up is temporarily unavailable. Please try again in a moment.';
 
 /**
- * Best-effort extraction of a human-readable message from a Supabase
- * FunctionsError. Non-2xx responses carry the original `Response` in
- * `error.context`; reading it can fail (or not exist in dev), so this never
- * throws and falls back to a friendly generic message.
+ * Classification of a Supabase FunctionsError raised by the
+ * `validate-signup-domain` invocation. We must distinguish two very different
+ * situations (Bug 1 / R2.2):
+ *
+ *  - `reject`      — the Edge Function IS deployed and explicitly responded
+ *                    with a non-2xx (invalid domain, rejected credentials).
+ *                    A `FunctionsHttpError` carries the original `Response` in
+ *                    `error.context`, so the presence of that response is our
+ *                    signal that the authoritative boundary answered. We surface
+ *                    that real message and NEVER fall back around the rejection.
+ *  - `unavailable` — a network/relay failure or a function that is simply not
+ *                    deployed (no HTTP response attached, or the invocation
+ *                    threw). This is the case that previously produced the
+ *                    generic "temporarily unavailable" message; instead we now
+ *                    fall back to the standard client SDK sign-up.
  */
-async function friendlyFunctionError(error: unknown): Promise<string> {
+type FunctionErrorClassification =
+  | { kind: 'reject'; message: string }
+  | { kind: 'unavailable' };
+
+async function classifyFunctionError(
+  error: unknown,
+): Promise<FunctionErrorClassification> {
   const context = (error as { context?: unknown } | null)?.context;
-  if (
-    context &&
-    typeof (context as { json?: unknown }).json === 'function'
-  ) {
+
+  // An attached HTTP Response means the function answered => authoritative
+  // rejection. Try to read the server's real error message; never throw.
+  if (context && typeof (context as { json?: unknown }).json === 'function') {
     try {
       const body = (await (context as Response).json()) as {
         error?: string;
       };
       if (body && typeof body.error === 'string' && body.error.length > 0) {
-        return body.error;
+        return { kind: 'reject', message: body.error };
       }
     } catch {
-      // fall through to generic message
+      // Non-2xx with an unreadable body is still an authoritative response.
     }
+    const message =
+      (error as { message?: string } | null)?.message ??
+      GENERIC_SIGNUP_UNAVAILABLE;
+    return { kind: 'reject', message };
   }
-  return GENERIC_SIGNUP_UNAVAILABLE;
+
+  // No HTTP response => transport error / function-not-deployed => fall back.
+  return { kind: 'unavailable' };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -151,9 +174,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { ok: false, error: reason };
       }
 
-      // Account creation happens at the trusted server boundary. The
+      const trimmedEmail = email.trim();
+
+      // PREFERRED PATH: account creation at the trusted server boundary. The
       // validate-signup-domain Edge Function enforces the allowlist and creates
-      // the user; the client never holds privileged credentials.
+      // the user; the client never holds privileged credentials. When this
+      // function is deployed it stays the authoritative path (R2.4/3.2).
       type SignupFnResponse = {
         success?: boolean;
         error?: string;
@@ -164,36 +190,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const invoked = await supabase.functions.invoke(
           'validate-signup-domain',
-          { body: { email: email.trim(), password } },
+          { body: { email: trimmedEmail, password } },
         );
         fnData = invoked.data as SignupFnResponse | null;
         fnError = invoked.error;
       } catch (thrown) {
-        // Network / function-not-deployed (local dev): fail friendly, no crash.
+        // Invocation threw (network / function-not-deployed in local dev). No
+        // HTTP response attached, so this is treated as "unavailable" below.
         fnError = thrown;
       }
 
-      if (fnError) {
-        const message = await friendlyFunctionError(fnError);
-        setError(message);
-        return { ok: false, error: message };
-      }
-
+      // An explicit body-level error is an authoritative rejection — surface it
+      // and do NOT fall back around it (R2.2 / R3.3).
       if (fnData && typeof fnData.error === 'string') {
         setError(fnData.error);
         return { ok: false, error: fnData.error };
       }
 
-      // Server created the account — now establish a session for the user.
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-      if (signInError) {
-        setError(signInError.message);
-        return { ok: false, error: signInError.message };
+      let edgeFunctionUnavailable = false;
+      if (fnError) {
+        const classified = await classifyFunctionError(fnError);
+        if (classified.kind === 'reject') {
+          // Deployed function explicitly rejected the request: surface the real
+          // server error; the authoritative path is preserved (no fallback).
+          setError(classified.message);
+          return { ok: false, error: classified.message };
+        }
+        // Function is unreachable / not deployed: fall back to the client SDK.
+        edgeFunctionUnavailable = true;
       }
 
+      if (!edgeFunctionUnavailable) {
+        // DEPLOYED_OK: the server created the account — establish a session.
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: trimmedEmail,
+          password,
+        });
+        if (signInError) {
+          setError(signInError.message);
+          return { ok: false, error: signInError.message };
+        }
+        return { ok: true };
+      }
+
+      // FALLBACK PATH (Bug 1 fix): the Edge Function is unavailable/unreachable.
+      // The client-side allowlist pre-check already passed as the gate, so we
+      // create the account with the standard client SDK instead of blocking
+      // registration with a generic "temporarily unavailable" message.
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({ email: trimmedEmail, password });
+      if (signUpError) {
+        // Surface the genuine SDK error (duplicate email, weak password, ...)
+        // rather than masking it with the generic message.
+        setError(signUpError.message);
+        return { ok: false, error: signUpError.message };
+      }
+
+      // If the SDK returned a session the user is already signed in. Otherwise
+      // (email-confirmation setups return no session) attempt to establish one;
+      // if confirmation is still required this will not sign in, and that is
+      // fine — report success and let the app show its confirm-email state.
+      if (!signUpData.session) {
+        await supabase.auth.signInWithPassword({
+          email: trimmedEmail,
+          password,
+        });
+      }
       return { ok: true };
     },
     [],

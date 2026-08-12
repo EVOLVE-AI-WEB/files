@@ -3,12 +3,14 @@
  *
  * Surfaces the estimates/limitations disclaimer and frames the 16.8 kcal/lb
  * calorie multiplier as a configurable default (never a medically exact
- * figure). Both strings are reused verbatim from src/features/shared/disclaimer.ts
- * so there is a single source of truth. Rendered in the AppShell footer so it
- * is visible across the whole app; a `compact` variant omits the multiplier
- * note for tighter contexts.
+ * figure). Both strings are reused verbatim from
+ * src/features/shared/disclaimerContent.ts so there is a single source of
+ * truth. That module is deliberately named differently from this component so
+ * the two never collide by filename case on case-insensitive filesystems.
+ * Rendered in the AppShell footer so it is visible across the whole app; a
+ * `compact` variant omits the multiplier note for tighter contexts.
  */
-import { DISCLAIMER_TEXT, CALORIE_MULTIPLIER_NOTE } from './disclaimer';
+import { DISCLAIMER_TEXT, CALORIE_MULTIPLIER_NOTE } from './disclaimerContent';
 
 type DisclaimerProps = {
   /** When true, show only the primary disclaimer text (no multiplier note). */
