@@ -126,44 +126,44 @@ The implementation language is **TypeScript** (strict), matching the design.
 - [ ] 6. Checkpoint — calculation & validation core verified
   - Ensure all unit and property-based tests for the pure layer pass, ask the user if questions arise.
 
-- [ ] 7. Supabase schema, constraints, and Row-Level Security
-  - [ ] 7.1 Author SQL migrations for all tables
+- [x] 7. Supabase schema, constraints, and Row-Level Security
+  - [x] 7.1 Author SQL migrations for all tables
     - Create `profiles`, `macro_settings`, `progress_entries`, `macro_target_history`, and `reminder_preferences` with canonical units and the illustrative DDL from the design
     - Add CHECK constraints (age 1–129, positive height/weight, body fat 0–75, multiplier bounds, `macro_target_history.source` enum) and `UNIQUE(user_id, logged_date)`; `on delete cascade` FKs to `auth.users`
     - _Requirements: 10.2, 10.3, 18.4, 18.5, 13.2_
 
-  - [ ] 7.2 Author RLS policies for every table
+  - [x] 7.2 Author RLS policies for every table
     - Enable RLS on all tables; add select/insert/update/delete policies restricted to `auth.uid() = user_id`; grant no update policy on `macro_target_history` (append-only)
     - _Requirements: 18.1, 18.2, 18.3, 13.1, 13.5_
 
-- [ ] 8. Trusted server-boundary Edge Functions
-  - [ ] 8.1 Implement `validate-signup-domain` Edge Function
+- [x] 8. Trusted server-boundary Edge Functions
+  - [x] 8.1 Implement `validate-signup-domain` Edge Function
     - Enforce the email-domain allowlist authoritatively server-side (parse after final `@`, lowercase, exact match); reject with no account created on failure; reuse the shared allowlist rule
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.6_
 
-  - [ ] 8.2 Implement `delete-account-and-data` Edge Function
+  - [x] 8.2 Implement `delete-account-and-data` Edge Function
     - Use the service-role key server-side only to delete the auth user so data cascades; verify success before responding; return a retryable error on failure and never report premature success
     - _Requirements: 17.2, 17.3, 17.5_
 
-- [ ] 9. Data-access layer (React Query over the typed client)
-  - [ ] 9.1 Implement query/mutation hooks for profiles, macro settings, progress entries, and macro history
+- [x] 9. Data-access layer (React Query over the typed client)
+  - [x] 9.1 Implement query/mutation hooks for profiles, macro settings, progress entries, and macro history
     - CRUD scoped by `auth.uid()`; progress upsert against `UNIQUE(user_id, logged_date)` with duplicate-edit handling and rapid-submit guard; append-only writes to `macro_target_history`; cache invalidation on mutation
     - _Requirements: 10.1, 10.3, 10.4, 10.5, 13.1, 13.3, 13.4_
 
-- [ ] 10. State layer — five-concept separation and Active_Weight_Selector
-  - [ ] 10.1 Implement the Active_Weight_Selector and macro/derived state
+- [x] 10. State layer — five-concept separation and Active_Weight_Selector
+  - [x] 10.1 Implement the Active_Weight_Selector and macro/derived state
     - In the state layer (outside the calc layer), select Active_Macro_Weight = Baseline when Auto OFF, = qualifying Rolling_Average when Auto ON + qualifying, else retain previous with a status message; expose baseline, active weight, latest 7-day average, effective date, and status; forbid goal weight or a single weigh-in from becoming active/baseline
     - Wire `calculateRollingWeightAverage` and `isAutoMacroUpdateQualified` as derived selectors; recompute rolling average on progress writes without mutating baseline
     - _Requirements: 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 11.6, 12.5, 12.6_
 
-  - [ ]* 10.2 Write property tests for weight-source separation invariants
+  - [x]* 10.2 Write property tests for weight-source separation invariants
     - **Property 7: A single daily weigh-in never changes baseline or macros**
     - **Property 8: Progress insert/update/delete never modifies baseline**
     - **Property 9: Auto Macro OFF preserves baseline macro behavior**
     - **Property 11: Goal weight never becomes macro weight**
     - **Validates: Requirements 4.3, 4.6, 4.7, 10.6, 14.6**
 
-  - [ ] 10.3 Implement macro-target-history appending on effective changes
+  - [x] 10.3 Implement macro-target-history appending on effective changes
     - Append a `macro_target_history` row (with correct `source`) whenever an effective target change occurs (baseline change, automatic weekly average, macro-settings change); never overwrite prior rows
     - _Requirements: 6.7, 13.1, 13.2, 13.3, 13.4_
 

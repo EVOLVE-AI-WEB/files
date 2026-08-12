@@ -141,3 +141,130 @@ export type MacroTargetSource =
   | 'manual_baseline_change'
   | 'automatic_weekly_average'
   | 'macro_settings_change';
+
+/**
+ * ---------------------------------------------------------------------------
+ * Persistence-facing domain types (Task 9 — data-access layer)
+ * ---------------------------------------------------------------------------
+ * The camelCase in-memory shapes the state / data layers consume, mapped from
+ * the snake_case Supabase rows by the mappers in `src/data/mappers.ts`. All
+ * persisted values stay in canonical units: weight kg, height/circumference cm,
+ * body fat %.
+ */
+
+/**
+ * Concept A (baselineWeightKg), Concept D (persisted activeMacroWeightKg), and
+ * Concept E (goalWeightKg / goalStartWeightKg) all live on the profile as
+ * distinct fields — they are never conflated (five-concept invariant, R4.1).
+ */
+export type Profile = {
+  userId: string;
+  name: string;
+  age: number | null;
+  biologicalSex: Sex | null;
+  preferredUnit: Unit;
+  heightCm: number | null;
+  baselineWeightKg: number | null;
+  neckCm: number | null;
+  waistCm: number | null;
+  hipCm: number | null;
+  goalWeightKg: number | null;
+  goalStartWeightKg: number | null;
+  goalCreatedAt: string | null;
+  autoMacroUpdateEnabled: boolean;
+  activeMacroWeightKg: number | null;
+  lastAutoMacroUpdateAt: string | null;
+  onboardingCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/**
+ * Fields the client may write when creating/updating a profile. `userId` is
+ * required so writes are scoped to the authenticated caller (RLS also enforces
+ * `auth.uid() = user_id`). All other fields are optional partial updates.
+ */
+export type ProfileWrite = {
+  userId: string;
+  name?: string;
+  age?: number | null;
+  biologicalSex?: Sex | null;
+  preferredUnit?: Unit;
+  heightCm?: number | null;
+  baselineWeightKg?: number | null;
+  neckCm?: number | null;
+  waistCm?: number | null;
+  hipCm?: number | null;
+  goalWeightKg?: number | null;
+  goalStartWeightKg?: number | null;
+  goalCreatedAt?: string | null;
+  autoMacroUpdateEnabled?: boolean;
+  activeMacroWeightKg?: number | null;
+  lastAutoMacroUpdateAt?: string | null;
+  onboardingCompleted?: boolean;
+};
+
+/** Full macro-settings row (domain shape) including ownership + audit stamp. */
+export type MacroSettingsRecord = MacroSettings & {
+  userId: string;
+  updatedAt: string;
+};
+
+/** Writable macro-settings payload scoped to the authenticated caller. */
+export type MacroSettingsWrite = {
+  userId: string;
+} & Partial<MacroSettings>;
+
+/**
+ * Payload for a progress-entry upsert. `loggedDate` + `userId` form the
+ * conflict target for UNIQUE(user_id, logged_date); an existing date updates
+ * in place (duplicate-date edit) rather than inserting a duplicate row.
+ */
+export type ProgressEntryWrite = {
+  userId: string;
+  loggedDate: string;
+  weightKg: number;
+  bodyFatPercentage?: number | null;
+  bodyFatMethod?: BodyFatMethod | null;
+};
+
+/**
+ * A single append-only macro_target_history record (domain shape). Written once
+ * whenever an effective macro-target change occurs; never overwritten (R13.1).
+ */
+export type MacroTargetHistoryRecord = {
+  id: string;
+  userId: string;
+  effectiveDate: string;
+  calculationWeightKg: number;
+  source: MacroTargetSource;
+  rollingAverageKg: number | null;
+  calorieMultiplier: number;
+  proteinMultiplier: number;
+  fatMultiplier: number;
+  calculatedCalories: number;
+  calculatedProteinG: number;
+  calculatedFatG: number;
+  calculatedCarbsG: number;
+  createdAt: string;
+};
+
+/**
+ * Content of a new append-only history row (no server-assigned id/createdAt).
+ * Built by the state layer (`buildMacroTargetHistoryInsert`) and written by the
+ * data layer's append hook.
+ */
+export type MacroTargetHistoryInsert = {
+  userId: string;
+  effectiveDate: string;
+  calculationWeightKg: number;
+  source: MacroTargetSource;
+  rollingAverageKg: number | null;
+  calorieMultiplier: number;
+  proteinMultiplier: number;
+  fatMultiplier: number;
+  calculatedCalories: number;
+  calculatedProteinG: number;
+  calculatedFatG: number;
+  calculatedCarbsG: number;
+};
