@@ -244,18 +244,18 @@ The implementation language is **TypeScript** (strict), matching the design.
     - Display the estimates/limitations disclaimer and present `16.8 kcal/lb` as a configurable default multiplier, not a medically exact figure
     - _Requirements: 24.1, 24.2, 24.3_
 
-- [ ] 18. Integration tests and production build verification
-  - [ ]* 18.1 Write RLS cross-user isolation integration tests
+- [x] 18. Integration tests and production build verification
+  - [x]* 18.1 Write RLS cross-user isolation integration tests
     - **Property 15: RLS prevents cross-user access**
     - **Validates: Requirements 18.1, 18.2, 18.3**
     - Verify user A cannot select/update/delete user B's rows in any table against a local/ephemeral Supabase
 
-  - [ ]* 18.2 Write trusted-boundary deletion and allowlist integration tests
+  - [x]* 18.2 Write trusted-boundary deletion and allowlist integration tests
     - **Property 16: Deletion requires authorization & only via trusted boundary**
     - **Validates: Requirements 17.2, 17.4, 2.4**
     - Verify clients cannot delete the auth user directly, deletion succeeds only via the service-role Edge Function after verified success, and the Edge Function enforces the email allowlist (P14)
 
-  - [ ] 18.3 Verify the production build succeeds
+  - [x] 18.3 Verify the production build succeeds
     - Run the production build, resolve any type/build errors, and confirm a clean `build` output
     - _Requirements: 26.5_
 
