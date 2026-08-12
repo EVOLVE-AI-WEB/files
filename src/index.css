@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design-system tokens (Task 17.1; R21.1–21.4).
+ *
+ * Semantic colors are expressed as space-separated RGB channels so Tailwind's
+ * `<alpha-value>` syntax works (see tailwind.config.js). Light values come from
+ * the verified benchmark (videoframe_167.png): a soft cool-gray/lavender app
+ * background (#F4F6FC) and pure-white card surfaces. The `.dark` block mirrors
+ * every token so dark mode is a true mirror rather than a bolt-on (R21.4).
+ */
+:root {
+  color-scheme: light;
+  --app-bg: 244 246 252; /* #F4F6FC */
+  --surface: 255 255 255; /* #FFFFFF card surface */
+  --surface-muted: 241 245 249; /* slate-100-ish inner tiles */
+  --content: 28 32 56; /* #1C2038 brand navy text */
+  --content-muted: 100 116 139; /* slate-500 */
+}
+
+html.dark {
+  color-scheme: dark;
+  --app-bg: 15 18 32; /* #0F1220 deep navy */
+  --surface: 26 30 48; /* #1A1E30 elevated card */
+  --surface-muted: 35 40 66; /* #232842 inner tile */
+  --content: 238 240 250; /* near-white text */
+  --content-muted: 154 161 184; /* muted slate */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: rgb(var(--app-bg));
+  color: rgb(var(--content));
+}
+
+/* Safe-area inset helpers for the installed/standalone PWA (R20.1, R23.3). */
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Bottom navigation must clear the home-indicator inset. */
+  .h-nav-safe {
+    height: calc(64px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/*
+ * Dark-mode mirror layer.
+ *
+ * The feature screens (Dashboard/Calculator/Progress/Profile) were built with
+ * literal light-mode utilities (bg-white, text-brand-navy, text-slate-*,
+ * bg-slate-50, borders). Rather than touch every file, we remap those exact
+ * utilities inside `.dark`. `.dark .bg-white` (specificity 0,2,0) reliably wins
+ * over the base `.bg-white` utility, giving a consistent, mirrored dark theme
+ * across the whole app. Fixed brand accents (bg-brand-navy buttons, gradient
+ * feature cards, status colors) are intentionally preserved.
+ */
+.dark .bg-white {
+  background-color: rgb(var(--surface));
+}
+.dark .bg-app-bg {
+  background-color: rgb(var(--app-bg));
+}
+.dark .text-brand-navy {
+  color: rgb(var(--content));
+}
+.dark .text-slate-600 {
+  color: #c3c8d9;
+}
+.dark .text-slate-500 {
+  color: rgb(var(--content-muted));
+}
+.dark .text-slate-400 {
+  color: #808aa3;
+}
+.dark .bg-slate-50 {
+  background-color: rgb(var(--surface-muted));
+}
+.dark .bg-slate-100 {
+  background-color: rgb(var(--surface-muted));
+}
+.dark .bg-slate-200 {
+  background-color: #2c3350;
+}
+.dark .border-slate-200 {
+  border-color: #2c3350;
+}
+.dark .border-slate-300 {
+  border-color: #343b58;
+}
+/* Primary navy buttons: brighten slightly so they read on the dark surface. */
+.dark .bg-brand-navy {
+  background-color: #3b47c9;
+}
+
+/* Respect reduced-motion globally as a safety net for CSS transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
