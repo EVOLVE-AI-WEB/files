@@ -170,47 +170,47 @@ The implementation language is **TypeScript** (strict), matching the design.
 - [ ] 11. Checkpoint — data and state layers verified
   - Ensure all tests pass and state invariants hold, ask the user if questions arise.
 
-- [ ] 12. Authentication and routing
-  - [ ] 12.1 Implement AuthProvider, session persistence, and auth screens
+- [x] 12. Authentication and routing
+  - [x] 12.1 Implement AuthProvider, session persistence, and auth screens
     - Sign up (with client-side allowlist pre-check invoking the Edge Function), sign in, sign out, forgot-password flow; restore persistent sessions on reload; show errors on invalid credentials without a session
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.7, 2.5_
 
-  - [ ] 12.2 Implement ProtectedRoute and app router
+  - [x] 12.2 Implement ProtectedRoute and app router
     - Redirect unauthenticated visitors to the auth entry point without rendering protected content; route to onboarding vs. main app based on `onboarding_completed`
     - _Requirements: 1.6, 3.1_
 
-- [ ] 13. Onboarding flow
-  - [ ] 13.1 Implement the OnboardingFlow screens
+- [x] 13. Onboarding flow
+  - [x] 13.1 Implement the OnboardingFlow screens
     - Collect required name/age/height/starting weight (field-level validation blocks completion), unit-system choice with imperial→canonical persistence, optional goal weight, optional Navy setup with Skip; set Auto Update OFF, persist `onboarding_completed = true`, and set Baseline_Weight
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-- [ ] 14. Calculator and dashboard screens
-  - [ ] 14.1 Implement the CalculatorScreen sections
+- [x] 14. Calculator and dashboard screens
+  - [x] 14.1 Implement the CalculatorScreen sections
     - Personal Details, Body Measurements, Advanced Macro Settings (with Reset to Defaults), Nutrition Results, Macro Visualization, Body Composition Results, and Methodology; wire to the pure calc/validation layer; show carb-shortfall guidance and Navy inline errors/warnings; apply display rounding only
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 7.5, 8.5, 8.6, 8.7, 9.6, 19.2, 19.3, 19.4, 19.5_
 
-  - [ ] 14.2 Implement the animated body-fat gauge
+  - [x] 14.2 Implement the animated body-fat gauge
     - Sex-dependent horizontal gauge with moving pointer and category labels; convey status by more than color (accessible)
     - _Requirements: 9.4, 9.5_
 
-  - [ ] 14.3 Implement the DashboardScreen with macro-source messaging
+  - [x] 14.3 Implement the DashboardScreen with macro-source messaging
     - Animated calorie ring, macro bars, body-composition summary, and a macro-source banner distinguishing baseline-sourced vs. 7-day-average-sourced macros; expose baseline, active weight, latest average, effective date, and status
     - _Requirements: 12.8, 5.7_
 
-- [ ] 15. Progress tracking, auto-update, goal, history, and charts
-  - [ ] 15.1 Implement the Progress screen: add-weight form and rolling-average card
+- [x] 15. Progress tracking, auto-update, goal, history, and charts
+  - [x] 15.1 Implement the Progress screen: add-weight form and rolling-average card
     - Add/edit today's weight (required positive weight + optional body fat) via upsert with duplicate-date edit and rapid-submit guard; show the 7-day average with measurement count; display rounded to 1 decimal
     - _Requirements: 10.1, 10.4, 10.5, 10.8, 11.5, 11.7_
 
-  - [ ] 15.2 Implement the Auto Macro Update controls
+  - [x] 15.2 Implement the Auto Macro Update controls
     - Opt-in/opt-out toggle (OFF by default); on disable, offer the explicit choice to return to baseline or make current weight the new baseline (confirmed); surface qualification status reasons
     - _Requirements: 12.1, 12.2, 12.6, 12.9_
 
-  - [ ] 15.3 Implement the Goal Progress card and Macro History list
+  - [x] 15.3 Implement the Goal Progress card and Macro History list
     - Render goal progress (bar capped at 100%, true value retained, correct status) and the append-only macro target history; ensure goal changes never affect macros/baseline/active/multipliers/history
     - _Requirements: 14.5, 14.6, 13.1, 13.2, 13.3_
 
-  - [ ] 15.4 Implement Recharts trend charts
+  - [x] 15.4 Implement Recharts trend charts
     - Daily weight, 7-day average, body fat %, fat mass, lean body mass; selectable ranges (4wk/8wk/12wk/6mo/1yr/All); baseline/active/goal reference lines; empty states; chronological order; never connect/fabricate missing body-composition points; summaries only where data exists
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6_
 
