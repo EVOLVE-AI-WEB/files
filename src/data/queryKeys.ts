@@ -8,4 +8,6 @@ export const queryKeys = {
   macroSettings: (userId: string) => ['macroSettings', userId] as const,
   progressEntries: (userId: string) => ['progressEntries', userId] as const,
   macroTargetHistory: (userId: string) => ['macroTargetHistory', userId] as const,
+  reminderPreferences: (userId: string) =>
+    ['reminderPreferences', userId] as const,
 } as const;

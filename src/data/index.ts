@@ -20,6 +20,11 @@ export {
   useMacroTargetHistory,
   useAppendMacroTargetHistory,
 } from './useMacroTargetHistory';
+export {
+  useReminderPreferences,
+  useUpsertReminderPreferences,
+} from './useReminderPreferences';
+export { useDeleteAccount } from './useDeleteAccount';
 
 export type {
   ProfileRow,
@@ -30,4 +35,6 @@ export type {
   ProgressEntryRowWrite,
   MacroTargetHistoryRow,
   MacroTargetHistoryRowWrite,
+  ReminderPreferencesRow,
+  ReminderPreferencesRowWrite,
 } from './dbTypes';

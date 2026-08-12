@@ -250,6 +250,27 @@ export type MacroTargetHistoryRecord = {
 };
 
 /**
+ * Optional "Body Composition Check-In" reminder preference (Concept: R16).
+ * Mirrors the `reminder_preferences` table. Reminders are OFF by default and
+ * require explicit opt-in plus notification permission before scheduling
+ * (R16.1). `checkInSchedule` is a free-form, human-readable cadence string
+ * (e.g. "Sat 10 PM, Sun 9 AM"); it is null when reminders are off / unset.
+ */
+export type ReminderPreferences = {
+  userId: string;
+  enabled: boolean;
+  checkInSchedule: string | null;
+  updatedAt: string;
+};
+
+/** Writable reminder-preferences payload scoped to the authenticated caller. */
+export type ReminderPreferencesWrite = {
+  userId: string;
+  enabled?: boolean;
+  checkInSchedule?: string | null;
+};
+
+/**
  * Content of a new append-only history row (no server-assigned id/createdAt).
  * Built by the state layer (`buildMacroTargetHistoryInsert`) and written by the
  * data layer's append hook.

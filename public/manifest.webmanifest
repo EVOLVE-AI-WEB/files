@@ -1,0 +1,26 @@
+{
+  "name": "Macro & Body Composition Calculator",
+  "short_name": "Evolve Macros",
+  "description": "Evolve Fitness — daily macro targets, BMI, U.S. Navy body-fat, and body-composition tracking. Estimates for informational and personal-planning purposes only.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1C2038",
+  "background_color": "#F4F6FC",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    {
+      "src": "/3D_mobile_.jpeg",
+      "type": "image/jpeg",
+      "sizes": "1502x1502",
+      "purpose": "any"
+    },
+    {
+      "src": "/3D_mobile_.jpeg",
+      "type": "image/jpeg",
+      "sizes": "1502x1502",
+      "purpose": "maskable"
+    }
+  ]
+}

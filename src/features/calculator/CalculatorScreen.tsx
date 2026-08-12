@@ -21,6 +21,7 @@
  * _Requirements: 6.1–6.6, 7.5, 8.5, 8.6, 8.7, 9.6, 19.2–19.5_
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { motion } from 'framer-motion';
 import type { MacroSettings, Sex } from '../../types';
 import { CONFIG } from '../../config';
 import { cmToInches } from '../../calculations/conversions';
@@ -46,6 +47,7 @@ import {
 } from '../../data/useMacroSettings';
 import { AuthField } from '../auth/AuthField';
 import { MacroBars } from '../shared/MacroBars';
+import { StaggerContainer, cardItemVariants } from '../shared/motion';
 import {
   deriveMacroStateFromProfile,
   buildMacroSourceMessage,
@@ -79,7 +81,8 @@ function Card({
   labelledById: string;
 }) {
   return (
-    <section
+    <motion.section
+      variants={cardItemVariants}
       aria-labelledby={labelledById}
       className="flex flex-col gap-4 rounded-card bg-white p-5 shadow-card"
     >
@@ -87,7 +90,7 @@ function Card({
         {title}
       </h2>
       {children}
-    </section>
+    </motion.section>
   );
 }
 
@@ -251,7 +254,7 @@ export function CalculatorScreen() {
     : undefined;
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-5 p-6 pb-24">
+    <StaggerContainer className="mx-auto flex max-w-md flex-col gap-5 p-6 pb-24">
       <header>
         <h1 className="text-2xl font-bold text-brand-navy">Calculator</h1>
       </header>
@@ -501,6 +504,6 @@ export function CalculatorScreen() {
           </p>
         </div>
       </Card>
-    </div>
+    </StaggerContainer>
   );
 }

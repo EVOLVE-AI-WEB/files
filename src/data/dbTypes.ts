@@ -92,6 +92,21 @@ export type MacroTargetHistoryRow = {
   created_at: string;
 };
 
+/** `public.reminder_preferences` — 0..1 with auth.users. */
+export type ReminderPreferencesRow = {
+  user_id: string;
+  enabled: boolean;
+  check_in_schedule: string | null;
+  updated_at: string;
+};
+
+/** Upsert payload for `public.reminder_preferences` (conflict on user_id). */
+export type ReminderPreferencesRowWrite = Partial<
+  Omit<ReminderPreferencesRow, 'user_id' | 'updated_at'>
+> & {
+  user_id: string;
+};
+
 /** Insert payload for `public.macro_target_history` (no server-assigned cols). */
 export type MacroTargetHistoryRowWrite = {
   user_id: string;

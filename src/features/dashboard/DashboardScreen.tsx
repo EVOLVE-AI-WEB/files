@@ -30,7 +30,10 @@ import {
   settingsOrDefaults,
 } from '../shared/macroDerivation';
 import { formatOneDecimal } from '../shared/format';
+import { Calculator, TrendingUp, CircleUser } from 'lucide-react';
 import { MacroBars } from '../shared/MacroBars';
+import { StaggerContainer, StaggerItem } from '../shared/motion';
+import { FeatureCard } from '../shared/FeatureCard';
 import { MacroSourceBanner } from './MacroSourceBanner';
 import { CalorieRing } from './CalorieRing';
 
@@ -109,28 +112,30 @@ export function DashboardScreen() {
   const leanMass = calculateLeanBodyMass(macroState.activeWeightKg, bodyFat);
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-5 p-6 pb-24">
+    <StaggerContainer className="mx-auto flex max-w-md flex-col gap-5 p-6 pb-24">
       <header>
         <h1 className="text-2xl font-bold text-brand-navy">Dashboard</h1>
       </header>
 
-      <MacroSourceBanner
-        source={macroState.activeSource}
-        activeWeightKg={macroState.activeWeightKg}
-        baselineWeightKg={macroState.baselineWeightKg}
-        latestAverageKg={macroState.latestSevenDayAverageKg}
-        effectiveDate={macroState.effectiveDate}
-        status={macroState.status}
-      />
+      <StaggerItem>
+        <MacroSourceBanner
+          source={macroState.activeSource}
+          activeWeightKg={macroState.activeWeightKg}
+          baselineWeightKg={macroState.baselineWeightKg}
+          latestAverageKg={macroState.latestSevenDayAverageKg}
+          effectiveDate={macroState.effectiveDate}
+          status={macroState.status}
+        />
+      </StaggerItem>
 
-      <section
+      <StaggerItem
         aria-label="Daily calorie target"
         className="flex flex-col items-center gap-3 rounded-card bg-white p-6 shadow-card"
       >
         <CalorieRing calories={macroState.macros.totalCalories} />
-      </section>
+      </StaggerItem>
 
-      <section
+      <StaggerItem
         aria-labelledby="dashboard-macros-heading"
         className="flex flex-col gap-4 rounded-card bg-white p-5 shadow-card"
       >
@@ -141,9 +146,33 @@ export function DashboardScreen() {
           Macro targets
         </h2>
         <MacroBars macros={macroState.macros} headingId="dashboard-macros-heading" />
-      </section>
+      </StaggerItem>
 
-      <section
+      <StaggerItem aria-label="Quick actions" className="flex gap-3">
+        <FeatureCard
+          to="/calculator"
+          title="Calculator"
+          subtitle="Macros & body fat"
+          icon={Calculator}
+          gradient="coral"
+        />
+        <FeatureCard
+          to="/progress"
+          title="Progress"
+          subtitle="Log & trends"
+          icon={TrendingUp}
+          gradient="sky"
+        />
+        <FeatureCard
+          to="/profile"
+          title="Profile"
+          subtitle="Settings"
+          icon={CircleUser}
+          gradient="magenta"
+        />
+      </StaggerItem>
+
+      <StaggerItem
         aria-labelledby="dashboard-bodycomp-heading"
         className="flex flex-col gap-3 rounded-card bg-white p-5 shadow-card"
       >
@@ -193,7 +222,7 @@ export function DashboardScreen() {
             Log a body-fat measurement to see fat mass and lean body mass.
           </p>
         )}
-      </section>
-    </div>
+      </StaggerItem>
+    </StaggerContainer>
   );
 }

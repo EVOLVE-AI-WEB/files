@@ -16,6 +16,8 @@ import type {
   ProfileWrite,
   ProgressEntry,
   ProgressEntryWrite,
+  ReminderPreferences,
+  ReminderPreferencesWrite,
 } from '../types';
 import type {
   MacroSettingsRow,
@@ -26,6 +28,8 @@ import type {
   ProfileRowWrite,
   ProgressEntryRow,
   ProgressEntryRowWrite,
+  ReminderPreferencesRow,
+  ReminderPreferencesRowWrite,
 } from './dbTypes';
 
 /**
@@ -190,4 +194,28 @@ export function toMacroTargetHistoryRowWrite(
     calculated_fat_g: insert.calculatedFatG,
     calculated_carbs_g: insert.calculatedCarbsG,
   };
+}
+
+// ---------------------------------------------------------------------------
+// reminder_preferences
+// ---------------------------------------------------------------------------
+
+export function mapReminderPreferencesRow(
+  row: ReminderPreferencesRow,
+): ReminderPreferences {
+  return {
+    userId: row.user_id,
+    enabled: row.enabled,
+    checkInSchedule: row.check_in_schedule,
+    updatedAt: row.updated_at,
+  };
+}
+
+export function toReminderPreferencesRowWrite(
+  write: ReminderPreferencesWrite,
+): ReminderPreferencesRowWrite {
+  const row: ReminderPreferencesRowWrite = { user_id: write.userId };
+  assignDefined(row, 'enabled', write.enabled);
+  assignDefined(row, 'check_in_schedule', write.checkInSchedule);
+  return row;
 }

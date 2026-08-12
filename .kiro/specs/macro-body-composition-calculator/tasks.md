@@ -214,33 +214,33 @@ The implementation language is **TypeScript** (strict), matching the design.
     - Daily weight, 7-day average, body fat %, fat mass, lean body mass; selectable ranges (4wk/8wk/12wk/6mo/1yr/All); baseline/active/goal reference lines; empty states; chronological order; never connect/fabricate missing body-composition points; summaries only where data exists
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6_
 
-- [ ] 16. Reminders and account deletion
-  - [ ] 16.1 Implement the optional reminder settings with honest degradation
+- [x] 16. Reminders and account deletion
+  - [x] 16.1 Implement the optional reminder settings with honest degradation
     - OFF by default, require explicit opt-in plus notification permission, disableable; degrade gracefully and honestly explain limits when reliable background notifications are unavailable; no secret backend; do not re-prompt after denial
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
 
-  - [ ] 16.2 Implement the account-deletion UI (Danger Zone)
+  - [x] 16.2 Implement the account-deletion UI (Danger Zone)
     - Deliberate confirmation and, where practical, recent re-authentication; invoke the deletion Edge Function; only after verified success sign out, clear caches/service-worker storage, return to unauthenticated state; on failure show a retryable error with unchanged state
     - _Requirements: 17.1, 17.4, 17.5_
 
-- [ ] 17. Design system, branding, theming, accessibility, and PWA
-  - [ ] 17.1 Implement the design system tokens and Framer Motion animations
+- [x] 17. Design system, branding, theming, accessibility, and PWA
+  - [x] 17.1 Implement the design system tokens and Framer Motion animations
     - Apply visual tokens from `videoframe_167.png` (backgrounds, card surfaces with 24px radius + soft shadow, dual-tone gradient feature cards, elevated `+` FAB, EVOLVE/FITNESS brand type); implement circular progress arc, number count-ups, staggered card entrances, and `whileTap` micro-interactions
     - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 24.1, 24.2, 24.3_
 
-  - [ ] 17.2 Implement the AppShell navigation with the JPEG logo and theme toggle
+  - [x] 17.2 Implement the AppShell navigation with the JPEG logo and theme toggle
     - Display the Logo_Asset referencing the JPEG `3D_mobile_.jpeg` from the repo root (NOT a PNG); bottom navigation on mobile transitioning to a sidebar on larger screens; dark/light mode toggle with mirrored tokens
     - _Requirements: 22.1, 22.2, 20.4, 21.4_
 
-  - [ ] 17.3 Implement mobile/Android-first responsiveness and accessibility
+  - [x] 17.3 Implement mobile/Android-first responsiveness and accessibility
     - Responsive from ~320px with no horizontal overflow and safe-area insets; 44–48px touch targets; no hover-only interactions; `inputMode` decimal/numeric; keyboard navigation and ARIA; accessible contrast and non-color-only status
     - _Requirements: 20.1, 20.2, 20.3, 20.5, 20.6_
 
-  - [ ] 17.4 Implement the installable PWA (manifest + service worker)
+  - [x] 17.4 Implement the installable PWA (manifest + service worker)
     - Web app manifest (theme colors, `standalone`), service worker for app-shell caching and offline read of cached data, responsive viewport with safe-area insets; make only honest capability claims
     - _Requirements: 23.1, 23.2, 23.3, 23.4_
 
-  - [ ] 17.5 Surface the disclaimer text
+  - [x] 17.5 Surface the disclaimer text
     - Display the estimates/limitations disclaimer and present `16.8 kcal/lb` as a configurable default multiplier, not a medically exact figure
     - _Requirements: 24.1, 24.2, 24.3_
 

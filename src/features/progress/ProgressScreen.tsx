@@ -44,6 +44,7 @@ import {
   todayIso,
 } from '../shared/macroDerivation';
 import { formatKg, formatOneDecimal } from '../shared/format';
+import { StaggerContainer, StaggerItem } from '../shared/motion';
 import { AddWeightForm, type AddWeightSubmit } from './AddWeightForm';
 import { RollingAverageCard } from './RollingAverageCard';
 import { AutoMacroUpdateControls } from './AutoMacroUpdateControls';
@@ -234,13 +235,13 @@ export function ProgressScreen() {
   }
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-5 p-6 pb-24">
+    <StaggerContainer className="mx-auto flex max-w-md flex-col gap-5 p-6 pb-24">
       <header>
         <h1 className="text-2xl font-bold text-brand-navy">Progress</h1>
       </header>
 
       {/* Summary */}
-      <section
+      <StaggerItem
         aria-labelledby="progress-summary-heading"
         className="flex flex-col gap-3 rounded-card bg-white p-5 shadow-card"
       >
@@ -279,65 +280,81 @@ export function ProgressScreen() {
           </div>
         </dl>
         <p className="text-xs text-slate-500">{macroState.status}</p>
-      </section>
+      </StaggerItem>
 
       {/* Goal Progress */}
-      <GoalProgressCard
-        goalWeightKg={profile.goalWeightKg}
-        goalStartWeightKg={profile.goalStartWeightKg}
-        currentWeightKg={currentWeightKg}
-        onSaveGoal={handleSaveGoal}
-        isSaving={upsertProfile.isPending}
-      />
+      <StaggerItem>
+        <GoalProgressCard
+          goalWeightKg={profile.goalWeightKg}
+          goalStartWeightKg={profile.goalStartWeightKg}
+          currentWeightKg={currentWeightKg}
+          onSaveGoal={handleSaveGoal}
+          isSaving={upsertProfile.isPending}
+        />
+      </StaggerItem>
 
       {/* Add Today's Weight */}
-      <AddWeightForm
-        loggedDate={today}
-        existingEntry={todayEntry}
-        onSubmit={handleAddWeight}
-        isPending={upsertEntry.isPending}
-      />
+      <StaggerItem>
+        <AddWeightForm
+          loggedDate={today}
+          existingEntry={todayEntry}
+          onSubmit={handleAddWeight}
+          isPending={upsertEntry.isPending}
+        />
+      </StaggerItem>
 
       {/* 7-Day Average */}
-      <RollingAverageCard rollingAverage={macroState.rollingAverage} />
+      <StaggerItem>
+        <RollingAverageCard rollingAverage={macroState.rollingAverage} />
+      </StaggerItem>
 
       {/* Auto Macro Update */}
-      <AutoMacroUpdateControls
-        enabled={profile.autoMacroUpdateEnabled}
-        qualification={macroState.qualification}
-        activeWeightKg={activeWeightKg}
-        baselineWeightKg={baselineWeightKg}
-        onEnable={() => void handleEnableAuto()}
-        onDisableReturnToBaseline={() => void handleReturnToBaseline()}
-        onDisableMakeCurrentBaseline={() => void handleMakeCurrentBaseline()}
-        isBusy={isBusy}
-      />
+      <StaggerItem>
+        <AutoMacroUpdateControls
+          enabled={profile.autoMacroUpdateEnabled}
+          qualification={macroState.qualification}
+          activeWeightKg={activeWeightKg}
+          baselineWeightKg={baselineWeightKg}
+          onEnable={() => void handleEnableAuto()}
+          onDisableReturnToBaseline={() => void handleReturnToBaseline()}
+          onDisableMakeCurrentBaseline={() => void handleMakeCurrentBaseline()}
+          isBusy={isBusy}
+        />
+      </StaggerItem>
 
       {/* Trend charts share a single range selector */}
-      <section
+      <StaggerItem
         aria-label="Trend range"
         className="flex flex-col gap-2 rounded-card bg-white p-5 shadow-card"
       >
         <h2 className="text-lg font-semibold text-brand-navy">Trends</h2>
         <TrendRangeSelector value={range} onChange={setRange} />
-      </section>
+      </StaggerItem>
 
       {/* Daily + Average Trend */}
-      <WeightTrendChart
-        points={weightSeries}
-        baselineWeightKg={baselineWeightKg}
-        activeWeightKg={activeWeightKg}
-        goalWeightKg={profile.goalWeightKg}
-      />
+      <StaggerItem>
+        <WeightTrendChart
+          points={weightSeries}
+          baselineWeightKg={baselineWeightKg}
+          activeWeightKg={activeWeightKg}
+          goalWeightKg={profile.goalWeightKg}
+        />
+      </StaggerItem>
 
       {/* Body Fat Trend */}
-      <BodyFatTrendChart points={bodyCompSeries} />
+      <StaggerItem>
+        <BodyFatTrendChart points={bodyCompSeries} />
+      </StaggerItem>
 
       {/* Fat / Lean Trends */}
-      <FatLeanTrendChart points={bodyCompSeries} />
+      <StaggerItem>
+        <FatLeanTrendChart points={bodyCompSeries} />
+      </StaggerItem>
 
       {/* History */}
-      <MacroHistoryList records={history} />
-    </div>
+      <StaggerItem>
+        <MacroHistoryList records={history} />
+      </StaggerItem>
+    </StaggerContainer>
   );
 }
